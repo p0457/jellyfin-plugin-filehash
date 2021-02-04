@@ -18,6 +18,7 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
     public class GenerateHashesTask : IScheduledTask
     {
         private readonly ILibraryManager _libraryManager;
+        private readonly IMetadataSaver _metadataSaver;
 
         /// <summary>
         ///
@@ -26,10 +27,12 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
         /// <param name="libraryManager"></param>
         public GenerateHashesTask(
             ILoggerFactory loggerFactory,
-            ILibraryManager libraryManager)
+            ILibraryManager libraryManager,
+            IMetadataSaver metadataSaver)
         {
             _logger = loggerFactory.CreateLogger<GenerateHashesTask>();
             _libraryManager = libraryManager;
+            _metadataSaver = metadataSaver;
         }
 
         public string Key => "GenerateHashesTask";

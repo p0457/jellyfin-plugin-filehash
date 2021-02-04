@@ -14,7 +14,16 @@ namespace Jellyfin.Plugin.FileHash
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
-        IHttpClientFactory _httpClientFactory;
+        /// <summary>
+        /// Gets the provider name.
+        /// </summary>
+        public const string ProviderName = "File Hash";
+
+        /// <summary>
+        /// Gets the provider id.
+        /// </summary>
+        public const string ProviderId = "filehash";
+
         public Plugin(
             IApplicationPaths applicationPaths,
             IXmlSerializer xmlSerializer,
@@ -22,15 +31,6 @@ namespace Jellyfin.Plugin.FileHash
             : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
-            _httpClientFactory = httpClientFactory;
-        }
-
-        public HttpClient GetHttpClient() {
-            var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
-            httpClient.DefaultRequestHeaders.UserAgent.Add(
-                new ProductInfoHeaderValue(Name, Version.ToString()));
-
-            return httpClient;
         }
 
         /// <inheritdoc />
@@ -38,6 +38,10 @@ namespace Jellyfin.Plugin.FileHash
 
         /// <inheritdoc />
         public override Guid Id => Guid.Parse("11ff9bad-19ef-4f91-98cf-7e3611fcd50e");
+
+        /// <summary>
+        /// Gets current plugin instance.
+        /// </summary>
 
         public static Plugin Instance { get; private set; }
 
