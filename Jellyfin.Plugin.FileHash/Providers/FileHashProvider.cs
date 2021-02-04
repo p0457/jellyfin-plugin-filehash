@@ -53,7 +53,7 @@ namespace Jellyfin.Plugin.FileHash.Providers
             MetadataResult<Movie> result = new MetadataResult<Movie>() 
             {
                 HasMetadata = true,
-                Provider = "SHA1",
+                Provider = Plugin.ProviderId,
                 Item = new Movie()
             };
             result.Item.SetProviderId(Plugin.ProviderId, "TEST");
