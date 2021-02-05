@@ -33,6 +33,7 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
             _logger = loggerFactory.CreateLogger<GenerateHashesTask>();
             _libraryManager = libraryManager;
             _metadataSaver = metadataSaver;
+            _logger.LogInformation("TEST FILE HASH TASK CONSTRUCTOR");
         }
 
         public string Key => "GenerateHashesTask";
@@ -50,6 +51,7 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
         /// </summary>
         public async Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
+            _logger.LogInformation("TEST FILE HASH TASK EXECUTE START");
             List<BaseItem> mediaItems =
                 _libraryManager.GetItemList(
                         new InternalItemsQuery(user)
@@ -66,21 +68,23 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
 
             double total = mediaItems.Count;
 
+            progress.Report(1);
+
             foreach(BaseItem item in mediaItems) 
             {
                 string filePath = item.Path;
                 string checksumResult = String.Empty;
                 int checksumBufferSize = 1200000;
                 
-                using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), checksumBufferSize))
+                /*using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), checksumBufferSize))
                 {
                     byte[] checksum = null;
                     System.Security.Cryptography.SHA1 sha = System.Security.Cryptography.SHA1.Create();
                     checksum = sha.ComputeHash(stream);
                     checksumResult = BitConverter.ToString(checksum).Replace("-", String.Empty);
-                }
+                }*/
 
-
+                item.SetProviderId(Plugin.ProviderId, "TEST");
 
                 // TODO: Update metadata
 
@@ -92,9 +96,12 @@ namespace Jellyfin.Plugin.FileHash.ScheduledTasks
 
 
             }
+            progress.Report(100);
 
 
             // progress.Report(currentProgress);
+            _logger.LogInformation("TEST FILE HASH TASK EXECUTE START");
+            return;
         }
     }
 }

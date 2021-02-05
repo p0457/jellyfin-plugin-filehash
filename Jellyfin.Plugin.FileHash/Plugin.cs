@@ -9,6 +9,7 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Jellyfin.Plugin.FileHash
 {
@@ -26,12 +27,16 @@ namespace Jellyfin.Plugin.FileHash
 
         public Plugin(
             IApplicationPaths applicationPaths,
-            IXmlSerializer xmlSerializer,
-            IHttpClientFactory httpClientFactory)
+            IXmlSerializer xmlSerializer)
             : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
+            PollingTasks = new Dictionary<string, Task<bool>>();
         }
+
+        public Dictionary<string, Task<bool>> PollingTasks { get; set; }
+
+        public PluginConfiguration PluginConfiguration => Configuration;
 
         /// <inheritdoc />
         public override string Name => "File Hash";
