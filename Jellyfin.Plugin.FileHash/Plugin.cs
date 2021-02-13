@@ -41,6 +41,8 @@ namespace Jellyfin.Plugin.FileHash
         /// <inheritdoc />
         public override string Name => "File Hash";
 
+        public override string Description => "Hash your files for identification";
+
         /// <inheritdoc />
         public override Guid Id => Guid.Parse("11ff9bad-19ef-4f91-98cf-7e3611fcd50e");
 

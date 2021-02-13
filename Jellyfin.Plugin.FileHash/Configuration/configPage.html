@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>File Hash</title>
-</head>
-<body>
+    <head>
+        <meta charset="utf-8" />
+        <title>File Hash</title>
+    </head>
+    <body>
         <div id="jellyfin-plugin-filehash-config" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
             <div data-role="content">
                 <div class="content-primary">
-                    TODO: 
+                    <form id="file-hash-configuration-form">
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="sha1enable" name="sha1enable" />
+                                <span>Enable SHA1 Hashes</span>
+                            </label>
+                        </div>
+                        <div class="inputContainer">
+                            <input is="emby-input" id="sha1buffer" name="sha1buffer" type="number" label="SHA1 Buffer Size:" />
+                        </div>
+                        <div>
+                            <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            
         </div>
     </body>
-    </html>
+</html>
