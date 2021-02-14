@@ -75,10 +75,10 @@ namespace Jellyfin.Plugin.FileHash
                             {
                                 new ValueTuple<string, SortOrder>(ItemSortBy.SeriesSortName, SortOrder.Ascending),
                                 new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
-                            },
+                            }
+                            // Not sure how to filter for provider id to make this easier
                         })
                     .ToList();
-            // TODO: Handle removal of items that have already been processed, so that this can be two operations (do all, and do new)
 
             double totalItemCount = mediaItems.Count;
 
@@ -104,6 +104,14 @@ namespace Jellyfin.Plugin.FileHash
 
             foreach(BaseItem item in mediaItems) 
             {
+                var test1 = item.GetProviderId("sha1");
+                _logger.LogInformation($"____TESTING1 for sha1.. {test1}");
+                _logger.LogInformation($"____TESTING1 ITEM PROVIDER ID KEYS = {String.Join(",", item.ProviderIds.Keys)}");
+                _logger.LogInformation($"____TESTING1 ITEM PROVIDER ID VALUES = {String.Join(",", item.ProviderIds.Values)}");
+
+
+
+
                 Stopwatch sw = new Stopwatch();
 
                 string filePath = item.Path;
@@ -127,8 +135,13 @@ namespace Jellyfin.Plugin.FileHash
                     string elapsed = $"{sw.Elapsed.TotalSeconds.ToString()} seconds";
 
                     _logger.LogInformation($"Generated hash in {elapsed} for '{filePath}' using configured buffer size {alg.BufferSize} for algorithm {alg.Enum.ToString()}: {hashResult}");
-                    
+
                     await _libraryManager.RunMetadataSavers(item, ItemUpdateType.MetadataEdit);
+
+                    var test1 = item.GetProviderId("sha1");
+                    _logger.LogInformation($"____TESTING2 for sha1.. {test1}");
+                    _logger.LogInformation($"____TESTING2 ITEM PROVIDER ID KEYS = {String.Join(",", item.ProviderIds.Keys)}");
+                    _logger.LogInformation($"____TESTING2 ITEM PROVIDER ID VALUES = {String.Join(",", item.ProviderIds.Values)}");
                     
                     progressCurrent += eachAlgInterval;
                     
