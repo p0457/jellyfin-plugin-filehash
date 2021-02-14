@@ -105,14 +105,18 @@ namespace Jellyfin.Plugin.FileHash
             foreach(BaseItem item in mediaItems) 
             {
                 Stopwatch sw = new Stopwatch();
-                _logger.LogTrace($"Processing {item.FileNameWithoutExtension}...");
 
                 string filePath = item.Path;
+
+                _logger.LogTrace($"Processing {filePath}...");
                 
                 algorithms.ForEach(async (HashAlgorithm alg) => 
                 {
                     sw.Start();
                     string hashResult = String.Empty;
+
+                    _logger.LogTrace($"Processing {filePath} using configured buffer size {alg.BufferSize} for algorithm {alg.Enum.ToString()}...");
+
                     using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), alg.BufferSize))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -121,7 +125,9 @@ namespace Jellyfin.Plugin.FileHash
                     }
                     sw.Stop();
                     string elapsed = $"{sw.Elapsed.TotalSeconds.ToString()} seconds";
-                    _logger.LogInformation($"Generated hash in {elapsed} for '{filePath}' using algorithm {alg.Enum.ToString()}: {hashResult}");
+
+                    _logger.LogInformation($"Generated hash in {elapsed} for '{filePath}' using configured buffer size {alg.BufferSize} for algorithm {alg.Enum.ToString()}: {hashResult}");
+                    
                     await _libraryManager.RunMetadataSavers(item, ItemUpdateType.MetadataEdit);
                     
                     progressCurrent += eachAlgInterval;

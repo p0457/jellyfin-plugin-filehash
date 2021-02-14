@@ -26,10 +26,9 @@
                             </label>
                         </div>
                         <div class="inputContainer">
-                            <label for="md5buffer">MD5 Buffer Size:</label>
-                            <input is="emby-input" id="md5buffer" name="md5buffer" type="number" label="MD5 Buffer Size:" />
+                            <input is="emby-input" id="md5buffer" name="md5buffer" type="number" label="MD5 Buffer Size:" min="1" value="50" placeholder="ex: 1200000" />
                             <div class="fieldDescription">
-                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources.
+                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources. Default is 1200000.
                             </div>
                         </div>
                         <!-- SHA1 -->
@@ -40,10 +39,9 @@
                             </label>
                         </div>
                         <div class="inputContainer">
-                            <label for="sha1buffer">SHA1 Buffer Size:</label>
-                            <input is="emby-input" id="sha1buffer" name="sha1buffer" type="number" label="SHA1 Buffer Size:" />
+                            <input is="emby-input" id="sha1buffer" name="sha1buffer" type="number" label="SHA1 Buffer Size:" min="1" value="50" placeholder="ex: 1200000" />
                             <div class="fieldDescription">
-                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources.
+                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources. Default is 1200000.
                             </div>
                         </div>
                         <!-- SHA256 -->
@@ -54,10 +52,9 @@
                             </label>
                         </div>
                         <div class="inputContainer">
-                            <label for="sha256buffer">SHA256 Buffer Size:</label>
-                            <input is="emby-input" id="sha256buffer" name="sha256buffer" type="number" label="SHA256 Buffer Size:" />
+                            <input is="emby-input" id="sha256buffer" name="sha256buffer" type="number" label="SHA256 Buffer Size:" min="1" value="50" placeholder="ex: 1200000" />
                             <div class="fieldDescription">
-                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources.
+                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources. Default is 1200000.
                             </div>
                         </div>
                         <!-- SHA384 -->
@@ -68,10 +65,9 @@
                             </label>
                         </div>
                         <div class="inputContainer">
-                            <label for="sha384buffer">SHA384 Buffer Size:</label>
-                            <input is="emby-input" id="sha384buffer" name="sha384buffer" type="number" label="SHA384 Buffer Size:" />
+                            <input is="emby-input" id="sha384buffer" name="sha384buffer" type="number" label="SHA384 Buffer Size:" min="1" value="50" placeholder="ex: 1200000" />
                             <div class="fieldDescription">
-                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources.
+                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources. Default is 1200000.
                             </div>
                         </div>
                         <!-- SHA512 -->
@@ -82,10 +78,9 @@
                             </label>
                         </div>
                         <div class="inputContainer">
-                            <label for="sha512buffer">SHA512 Buffer Size:</label>
-                            <input is="emby-input" id="sha512buffer" name="sha512buffer" type="number" label="SHA512 Buffer Size:" />
+                            <input is="emby-input" id="sha512buffer" name="sha512buffer" type="number" label="SHA512 Buffer Size:" min="1" value="50" placeholder="ex: 1200000" />
                             <div class="fieldDescription">
-                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources.
+                                Buffer size of the stream to hash. Higher values complete faster, but consume more resources. Default is 1200000.
                             </div>
                         </div>
                         <!-- Save -->
@@ -107,16 +102,21 @@
         
                         ApiClient.getPluginConfiguration(pluginConfig.uniquePluginId).then(function (config) {
                             document.getElementById('maxItemsToProcessPerRun').value = config.MaxItemsToProcessPerRun || '';
-                            document.getElementById('md5enable').value = config.MD5Enabled || '';
-                            document.getElementById('md5buffer').value = config.MD5Buffer || '';
-                            document.getElementById('sha1enable').value = config.SHA1Enabled || '';
-                            document.getElementById('sha1buffer').value = config.SHA1Buffer || '';
-                            document.getElementById('sha256enable').value = config.SHA256Enabled || '';
-                            document.getElementById('sha256buffer').value = config.SHA256Buffer || '';
-                            document.getElementById('sha384enable').value = config.SHA384Enabled || '';
-                            document.getElementById('sha384buffer').value = config.SHA384Buffer || '';
-                            document.getElementById('sha512enable').value = config.SHA512Enabled || '';
-                            document.getElementById('sha512buffer').value = config.SHA512Buffer || '';
+
+                            document.getElementById('md5enable').checked = config.MD5Enabled;
+                            document.getElementById('md5buffer').value = config.MD5BufferSize || '';
+
+                            document.getElementById('sha1enable').checked = config.SHA1Enabled;
+                            document.getElementById('sha1buffer').value = config.SHA1BufferSize || '';
+
+                            document.getElementById('sha256enable').checked = config.SHA256Enabled;
+                            document.getElementById('sha256buffer').value = config.SHA256BufferSize || '';
+
+                            document.getElementById('sha384enable').checked = config.SHA384Enabled;
+                            document.getElementById('sha384buffer').value = config.SHA384BufferSize || '';
+
+                            document.getElementById('sha512enable').checked = config.SHA512Enabled;
+                            document.getElementById('sha512buffer').value = config.SHA512BufferSize || '';
                             Dashboard.hideLoadingMsg();
                         });
                     },
@@ -126,16 +126,21 @@
         
                         ApiClient.getPluginConfiguration(pluginConfig.uniquePluginId).then(function (config) {
                             config.MaxItemsToProcessPerRun = document.getElementById('maxItemsToProcessPerRun').value;
-                            config.MD5Enabled = document.getElementById('md5enable').value;
-                            config.MD5Buffer = document.getElementById('md5buffer').value;
-                            config.SHA1Enabled = document.getElementById('sha1enable').value;
-                            config.SHA1Buffer = document.getElementById('sha1buffer').value;
-                            config.SHA256Enabled = document.getElementById('sha256enable').value;
-                            config.SHA256Buffer = document.getElementById('sha256buffer').value;
-                            config.SHA384Enabled = document.getElementById('sha384enable').value;
-                            config.SHA384Buffer = document.getElementById('sha384buffer').value;
-                            config.SHA512Enabled = document.getElementById('sha512enable').value;
-                            config.SHA512Buffer = document.getElementById('sha512buffer').value;
+
+                            config.MD5Enabled = document.getElementById('md5enable').checked;
+                            config.MD5BufferSize = document.getElementById('md5buffer').value;
+
+                            config.SHA1Enabled = document.getElementById('sha1enable').checked;
+                            config.SHA1BufferSize = document.getElementById('sha1buffer').value;
+
+                            config.SHA256Enabled = document.getElementById('sha256enable').checked;
+                            config.SHA256BufferSize = document.getElementById('sha256buffer').value;
+                            
+                            config.SHA384Enabled = document.getElementById('sha384enable').checked;
+                            config.SHA384BufferSize = document.getElementById('sha384buffer').value;
+
+                            config.SHA512Enabled = document.getElementById('sha512enable').checked;
+                            config.SHA512BufferSize = document.getElementById('sha512buffer').value;
         
                             ApiClient.updatePluginConfiguration(pluginConfig.uniquePluginId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
