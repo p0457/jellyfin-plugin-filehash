@@ -104,7 +104,7 @@ namespace Jellyfin.Plugin.FileHash
 
             foreach(BaseItem item in mediaItems) 
             {
-                var test1 = item.GetProviderId("sha1");
+                var test1 = item.GetProviderId("sha1"); // Empty on 1st, 2nd run
                 _logger.LogInformation($"____TESTING1 for sha1.. {test1}");
                 _logger.LogInformation($"____TESTING1 ITEM PROVIDER ID KEYS = {String.Join(",", item.ProviderIds.Keys)}");
                 _logger.LogInformation($"____TESTING1 ITEM PROVIDER ID VALUES = {String.Join(",", item.ProviderIds.Values)}");
@@ -138,7 +138,7 @@ namespace Jellyfin.Plugin.FileHash
 
                     await _libraryManager.RunMetadataSavers(item, ItemUpdateType.MetadataEdit);
 
-                    var test1 = item.GetProviderId("sha1");
+                    var test1 = item.GetProviderId("sha1"); // Populated on 1st, 2nd run
                     _logger.LogInformation($"____TESTING2 for sha1.. {test1}");
                     _logger.LogInformation($"____TESTING2 ITEM PROVIDER ID KEYS = {String.Join(",", item.ProviderIds.Keys)}");
                     _logger.LogInformation($"____TESTING2 ITEM PROVIDER ID VALUES = {String.Join(",", item.ProviderIds.Values)}");
