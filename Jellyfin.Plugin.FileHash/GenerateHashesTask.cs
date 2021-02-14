@@ -75,36 +75,30 @@ namespace Jellyfin.Plugin.FileHash
                             {
                                 new ValueTuple<string, SortOrder>(ItemSortBy.SeriesSortName, SortOrder.Ascending),
                                 new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
-                            }
+                            },
                         })
                     .ToList();
+            // TODO: Handle removal of items that have already been processed, so that this can be two operations (do all, and do new)
 
             double totalItemCount = mediaItems.Count;
 
             _logger.LogInformation($"Found {totalItemCount} items to process");
 
+            int maxItemsToProcessPerRun = Plugin.Instance.PluginConfiguration.MaxItemsToProcessPerRun;
+            if (maxItemsToProcessPerRun > 0 && maxItemsToProcessPerRun < totalItemCount) {
+                mediaItems = mediaItems.Take(maxItemsToProcessPerRun).ToList();
+                totalItemCount = mediaItems.Count;
+                _logger.LogInformation($"Items to process exceeds configured max items to process, clamping to configured value of {maxItemsToProcessPerRun}");
+            }
+
             double progressCurrent = 5;
 
             progress.Report(progressCurrent);
 
-            List<HashAlgorithm> algorithms = HashAlgorithmsDictionary.GetAlgorithms();
-
-
-
-
-
-            // TESTING: Enable all algorithms
-            algorithms.ForEach((HashAlgorithm alg) => 
-            {
-                alg.Enabled = true;
-            });
-
-
-
+            List<HashAlgorithm> algorithms = HashAlgorithmsDictionary.GetConfiguredAlgorithms();
 
             double endBuffer = 5;
             
-            algorithms = algorithms.Where(x => x.Enabled == true).ToList();
             double totalAlgCount = algorithms.Count;
             double eachAlgInterval = (100 - progressCurrent - endBuffer)/(totalItemCount * totalAlgCount);
 
@@ -121,6 +115,7 @@ namespace Jellyfin.Plugin.FileHash
                     string hashResult = String.Empty;
                     using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), alg.BufferSize))
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         hashResult = alg.Hash(stream);
                         item.SetProviderId(alg.ExternalId, hashResult);
                     }

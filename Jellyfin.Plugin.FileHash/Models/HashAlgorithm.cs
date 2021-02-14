@@ -19,6 +19,8 @@ using MediaBrowser.Model.Querying;
 using System.Diagnostics;
 using Jellyfin.Plugin.FileHash.Providers.ExternalId;
 using System.Security.Cryptography;
+using MediaBrowser.Model.Plugins;
+using Jellyfin.Plugin.FileHash.Configuration;
 
 namespace Jellyfin.Plugin.FileHash
 {
@@ -33,16 +35,16 @@ namespace Jellyfin.Plugin.FileHash
 
     public static class HashAlgorithmsDictionary
     {
-        public static List<HashAlgorithm> GetAlgorithms() 
+        public static List<HashAlgorithm> GetConfiguredAlgorithms() 
         {
-            return new List<HashAlgorithm>() 
-            {
-                new SHA1HashAlgorithm(),
-                new SHA256HashAlgorithm(),
-                new SHA384HashAlgorithm(),
-                new SHA512HashAlgorithm(),
-                new MD5HashAlgorithm()
-            };
+            PluginConfiguration config = Plugin.Instance.PluginConfiguration;
+            List<HashAlgorithm> algs = new List<HashAlgorithm>();
+            if (config.MD5Enabled) algs.Add(new MD5HashAlgorithm(config.MD5BufferSize));
+            if (config.SHA1Enabled) algs.Add(new SHA1HashAlgorithm(config.SHA1BufferSize));
+            if (config.SHA256Enabled) algs.Add(new SHA256HashAlgorithm(config.SHA256BufferSize));
+            if (config.SHA384Enabled) algs.Add(new SHA384HashAlgorithm(config.SHA384BufferSize));
+            if (config.SHA512Enabled) algs.Add(new SHA512HashAlgorithm(config.SHA512BufferSize));
+            return algs;
         }
     }
 
@@ -50,19 +52,17 @@ namespace Jellyfin.Plugin.FileHash
     {
         public HashAlgorithmEnums Enum;
         public string ExternalId;
-        public bool Enabled;
         public int BufferSize;
         public abstract string Hash(BufferedStream stream);
     }
 
     public class SHA1HashAlgorithm : HashAlgorithm
     {
-        public SHA1HashAlgorithm() 
+        public SHA1HashAlgorithm(int bufferSize = 1200000) 
         {
             Enum = HashAlgorithmEnums.SHA1;
             ExternalId = FileHashSHA1ExternalIdStrings.Key;
-            Enabled = false;
-            BufferSize = 1200000;
+            BufferSize = bufferSize;
         }
         public override string Hash(BufferedStream stream) 
         {
@@ -76,12 +76,11 @@ namespace Jellyfin.Plugin.FileHash
 
     public class SHA256HashAlgorithm : HashAlgorithm
     {
-        public SHA256HashAlgorithm() 
+        public SHA256HashAlgorithm(int bufferSize = 1200000) 
         {
             Enum = HashAlgorithmEnums.SHA256;
             ExternalId = FileHashSHA256ExternalIdStrings.Key;
-            Enabled = false;
-            BufferSize = 1200000;
+            BufferSize = bufferSize;
         }
         public override string Hash(BufferedStream stream) 
         {
@@ -95,12 +94,11 @@ namespace Jellyfin.Plugin.FileHash
 
     public class SHA384HashAlgorithm : HashAlgorithm
     {
-        public SHA384HashAlgorithm() 
+        public SHA384HashAlgorithm(int bufferSize = 1200000) 
         {
             Enum = HashAlgorithmEnums.SHA384;
             ExternalId = FileHashSHA384ExternalIdStrings.Key;
-            Enabled = false;
-            BufferSize = 1200000;
+            BufferSize = bufferSize;
         }
         public override string Hash(BufferedStream stream) 
         {
@@ -114,12 +112,11 @@ namespace Jellyfin.Plugin.FileHash
 
     public class SHA512HashAlgorithm : HashAlgorithm
     {
-        public SHA512HashAlgorithm() 
+        public SHA512HashAlgorithm(int bufferSize = 1200000) 
         {
             Enum = HashAlgorithmEnums.SHA512;
             ExternalId = FileHashSHA512ExternalIdStrings.Key;
-            Enabled = false;
-            BufferSize = 1200000;
+            BufferSize = bufferSize;
         }
         public override string Hash(BufferedStream stream) 
         {
@@ -133,12 +130,11 @@ namespace Jellyfin.Plugin.FileHash
 
     public class MD5HashAlgorithm : HashAlgorithm
     {
-        public MD5HashAlgorithm() 
+        public MD5HashAlgorithm(int bufferSize = 1200000) 
         {
             Enum = HashAlgorithmEnums.MD5;
             ExternalId = FileHashMD5ExternalIdStrings.Key;
-            Enabled = true;
-            BufferSize = 1200000;
+            BufferSize = bufferSize;
         }
         public override string Hash(BufferedStream stream) 
         {
